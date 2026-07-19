@@ -1,0 +1,26 @@
+# OS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Foundry deps (OpenZeppelin + forge-std) - JANGAN di-push. Restore pakai `forge install`.
+SmartContract/lib/
+.gitmodules
+foundry.lock
+
+# Foundry build artifacts
+SmartContract/cache/
+SmartContract/out/
+SmartContract/broadcast/*/31337/
+SmartContract/broadcast/**/dry-run/
+SmartContract/.logs/
+SmartContract/docs/
+
+# Node (frontend/backend nanti)
+**/node_modules/
+**/dist/
+**/.next/
+**/coverage/
