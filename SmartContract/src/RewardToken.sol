@@ -22,10 +22,10 @@ contract RewardToken is ERC20, Ownable {
         _;
     }
 
-    constructor(uint256 initialSupply, address initialOwner)
-        ERC20("Reward Token", "RWD")
-        Ownable(initialOwner)
-    {
+    constructor(
+        uint256 initialSupply,
+        address initialOwner
+    ) ERC20("Reward Token", "RWD") Ownable(initialOwner) {
         _mintDenganCek(initialOwner, initialSupply);
     }
 
