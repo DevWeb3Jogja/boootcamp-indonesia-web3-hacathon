@@ -24,3 +24,7 @@ SmartContract/docs/
 **/dist/
 **/.next/
 **/coverage/
+
+# Folder kerja lokal (jangan di-push)
+_stage/
+_to_delete/

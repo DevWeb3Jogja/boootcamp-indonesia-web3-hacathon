@@ -1,0 +1,7 @@
+[wallet]
+kind = "evm-local"
+keystore_dir = ".studio/wallets"
+address = "0x842013c675fd7318464d06D243cc494fbFD6ba17"
+
+[network]
+default = "bsc-testnet"

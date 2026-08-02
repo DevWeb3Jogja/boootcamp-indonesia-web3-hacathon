@@ -1,0 +1,12 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Keystore wallet agent (JANGAN di-push)
+.studio/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
