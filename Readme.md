@@ -1,14 +1,8 @@
-# Silahkan Clone repo ini, buat lanjut sesi 4.
+# Silahkan Clone repo ini, buat lanjut sesi 6.
 
 ## Check list hari ini :
 
-- contract bounty factory: ??
-- contract bounty escrow versi oracle: ??
-- ai agent oracle jalan (auto approve): ??
-
-## Isi repo
-
-- `SmartContract/` - kontrak Foundry (RewardToken, BountyEscrow, BountyFactory)
-- `agent-oracle/` - AI agent oracle (BNB Agent Studio), tinggal setup dan jalankan
+- api work: ??
+- ai oracle work: ??
 
 # Selamat Belajar dan Menjadi Smart Contract Engineer Handal!
