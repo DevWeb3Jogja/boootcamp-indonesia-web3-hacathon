@@ -5,4 +5,4 @@
 - api work: ??
 - ai oracle work: ??
 
-# Selamat Belajar dan Menjadi Smart Contract Engineer Handal!
+# Selamat Belajar dan Menjadi Dev Handal!
