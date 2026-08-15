@@ -3,8 +3,8 @@
 Starter dApp UI untuk Papan Sayembara di **BNB Smart Chain Testnet**. Isinya baru kerangka:
 template + komponen UI + alamat kontrak. Sisanya kita bangun bareng pas sesi.
 
-Stack: Vite + React 19 + Tailwind v4 + shadcn/ui + **viem**. Sengaja tanpa wagmi, biar
-kelihatan apa yang sebenarnya terjadi waktu wallet diminta tanda tangan.
+Stack: Vite + React 19 + Tailwind v4 + shadcn/ui. SDK chain-nya **viem**, dipasang pas sesi.
+Sengaja tanpa wagmi, biar kelihatan apa yang sebenarnya terjadi waktu wallet diminta tanda tangan.
 
 ## 1. Jalankan
 
@@ -32,12 +32,13 @@ cd ../backend && bun dev
 
 | File                        | Isinya                                                    |
 | --------------------------- | --------------------------------------------------------- |
-| `src/lib/contracts.ts`      | alamat deployment + ABI + label status (sama dgn backend)  |
+| `src/lib/contracts.ts`      | alamat deployment + label status (ABI menyusul pas sesi)   |
 | `src/components/ui/*`       | komponen shadcn: Button, Card, Input, Tabs, Dialog, dll    |
 | `src/app.tsx`               | kerangka halaman — masih kosong                            |
 
 ## 4. Yang kita bangun bareng
 
+- [ ] `bun add viem` + tempel ABI ke `src/lib/contracts.ts`
 - [ ] `src/lib/chain.ts` — koneksi baca (RPC publik) & tulis (wallet peserta)
 - [ ] `src/hooks/use-wallet.ts` — sambung MetaMask + pindah ke BSC Testnet
 - [ ] `src/lib/api.ts` — ambil papan, peringkat, dan alasan juri AI dari backend
