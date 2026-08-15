@@ -252,53 +252,53 @@
 @layer components {
   /* Enhanced brutalist styles with color variants */
   .brutal {
-    @apply border-2 bg-secondary-background text-foreground rounded-md border-border shadow-shadow;
+    @apply bg-secondary-background text-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   /* Accent color variants */
   .brutal-pink {
-    @apply border-2 bg-accent-pink text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-pink text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-cyan {
-    @apply border-2 bg-accent-cyan text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-cyan text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-yellow {
-    @apply border-2 bg-accent-yellow text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-yellow text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-orange {
-    @apply border-2 bg-accent-orange text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-orange text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-green {
-    @apply border-2 bg-accent-green text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-green text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-red {
-    @apply border-2 bg-accent-red text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-red text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-blue {
-    @apply border-2 bg-accent-blue text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-blue text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-violet {
-    @apply border-2 bg-accent-violet text-main-foreground rounded-md border-border shadow-shadow;
+    @apply bg-accent-violet text-main-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   /* Surface variants */
   .brutal-surface {
-    @apply border-2 bg-surface text-foreground rounded-md border-border shadow-shadow;
+    @apply bg-surface text-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-surface-2 {
-    @apply border-2 bg-surface-2 text-foreground rounded-md border-border shadow-shadow;
+    @apply bg-surface-2 text-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   .brutal-surface-3 {
-    @apply border-2 bg-surface-3 text-foreground rounded-md border-border shadow-shadow;
+    @apply bg-surface-3 text-foreground border-border shadow-shadow rounded-md border-2;
   }
 
   /* Hover effects for interactive elements */
@@ -308,42 +308,50 @@
 
   /* Glow effects for dark mode */
   .dark .brutal-pink {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-pink) 30%, transparent);
   }
 
   .dark .brutal-cyan {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-cyan) 30%, transparent);
   }
 
   .dark .brutal-yellow {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-yellow) 30%, transparent);
   }
 
   .dark .brutal-orange {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-orange) 30%, transparent);
   }
 
   .dark .brutal-green {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-green) 30%, transparent);
   }
 
   .dark .brutal-red {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-red) 30%, transparent);
   }
 
   .dark .brutal-blue {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-blue) 30%, transparent);
   }
 
   .dark .brutal-violet {
-    box-shadow: 4px 4px 0px 0px var(--border),
+    box-shadow:
+      4px 4px 0px 0px var(--border),
       0 0 20px color-mix(in oklch, var(--accent-violet) 30%, transparent);
   }
 }
@@ -365,45 +373,23 @@ body {
 /* Enhanced grid background with subtle color */
 .bg-grid {
   background-color: var(--background);
-  background-image: linear-gradient(
-      to right,
-      color-mix(in oklch, var(--main) 50%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in oklch, var(--main) 50%, transparent) 1px,
-      transparent 1px
-    );
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--main) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--main) 50%, transparent) 1px, transparent 1px);
   background-size: 75px 75px;
 }
 
 /* Anime-style gradient backgrounds */
 .bg-anime-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--accent-pink),
-    var(--accent-cyan),
-    var(--accent-violet)
-  );
+  background: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan), var(--accent-violet));
 }
 
 .bg-anime-gradient-2 {
-  background: linear-gradient(
-    45deg,
-    var(--accent-yellow),
-    var(--accent-orange),
-    var(--accent-red)
-  );
+  background: linear-gradient(45deg, var(--accent-yellow), var(--accent-orange), var(--accent-red));
 }
 
 .bg-anime-gradient-3 {
-  background: linear-gradient(
-    225deg,
-    var(--accent-blue),
-    var(--main),
-    var(--accent-green)
-  );
+  background: linear-gradient(225deg, var(--accent-blue), var(--main), var(--accent-green));
 }
 
 @keyframes upsideDownPendulum {

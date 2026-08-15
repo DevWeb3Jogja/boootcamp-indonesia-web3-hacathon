@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { EXPLORER } from "@/lib/contracts";
 
@@ -32,18 +26,13 @@ export function TransactionDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="rounded-lg bg-muted p-4">
+          <div className="bg-muted rounded-lg p-4">
             <p className="mb-2 text-sm font-medium">Hash transaksi</p>
-            <p className="font-mono text-xs break-all text-muted-foreground">{hash}</p>
+            <p className="text-muted-foreground font-mono text-xs break-all">{hash}</p>
           </div>
 
           <div className="flex flex-col gap-2">
-            <a
-              className="w-full"
-              href={`${EXPLORER}/tx/${hash}`}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <a className="w-full" href={`${EXPLORER}/tx/${hash}`} rel="noopener noreferrer" target="_blank">
               <Button className="w-full">Lihat di BscScan →</Button>
             </a>
             <Button className="w-full" variant="outline" onClick={() => onOpenChange(false)}>
