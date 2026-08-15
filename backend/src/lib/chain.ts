@@ -4,7 +4,10 @@ import { createPublicClient, fallback, http } from "viem";
 import { bscTestnet } from "viem/chains";
 import { RPC_URLS } from "../config";
 
+// rank: transport diurutkan berdasarkan kesehatan, yang bermasalah tidak selalu dicoba pertama
+export const transport = fallback(RPC_URLS.map((url) => http(url)), { rank: true });
+
 export const client = createPublicClient({
-  chain: bscTestnet,
-  transport: fallback(RPC_URLS.map((url) => http(url)), { rank: true }),
+  chain: bscTestnet, // chainId 97, sudah tersedia di viem/chains
+  transport,
 });

@@ -1,22 +1,37 @@
-# Backend 1 — Mini Indexer Papan Sayembara
+# Backend Sesi 6 — Indexer + API + Juri AI
 
-> **Tujuan:** **API full** workshop (Hono :3000) + mini-indexer manual (viem + SQLite).  
-> Alternatif indexing otomatis: `../ponder` (Ponder = **index only**, GraphQL debug di :42069 — bukan API workshop).
+> Satu project, **dua perintah**: `bun dev` (indexer + REST API) dan `bun oracle` (juri AI).  
+> Keduanya berbagi `src/` yang sama — config, koneksi chain, dan database cuma ditulis sekali.
 
-> Baca event historis (`getLogs`) + dengerin event baru (`watchEvent`), lalu sajikan via API Hono.
+Alternatif indexing otomatis ada di `../ponder` (Ponder = **index only**, GraphQL debug di :42069 — bukan API workshop).
+
+Alur produknya: baca event chain (`getLogs` + `watchEvent`) → SQLite → sajikan lewat REST → juri AI ambil antrean dari SQLite yang sama, menilai, lalu kirim verdict balik ke chain.
 
 ## Quick start
 
 ```bash
 bun install
+cp .env.example .env    # isi RELAYER_PK, ORACLE_PK, LLM_API_KEY
 
-# jalanin server (auto backfill + watch + API)
+# terminal 1: indexer + API
 bun dev
 
-# test API
+# terminal 2: juri AI (butuh ORACLE_PK + LLM_API_KEY)
+bun oracle
+
+# test
 curl http://localhost:3000/board
 curl http://localhost:3000/health
 ```
+
+## Dua wallet, dua peran
+
+| Env          | Peran                                     | Butuh                                  |
+| ------------ | ----------------------------------------- | -------------------------------------- |
+| `RELAYER_PK` | panitia: `createBounty`, `submitWork`     | tBNB (gas) **dan** RWD (hadiah)        |
+| `ORACLE_PK`  | juri: `fulfillVerification`               | tBNB saja, + didaftarkan via `setOracle` |
+
+Keduanya opsional: kosongkan `RELAYER_PK` → `/relay/*` balas 503; kosongkan `ORACLE_PK` → `bun oracle` berhenti dengan pesan jelas. API baca tetap hidup tanpa keduanya.
 
 ## API endpoints
 
@@ -26,7 +41,28 @@ curl http://localhost:3000/health
 | GET    | `/bounty/:escrow`   | Detail satu bounty (live dari chain, 6 view = 1 multicall)     |
 | GET    | `/wallet/:address`  | Bounty & submission milik wallet tsb                           |
 | GET    | `/balance/:address` | Saldo RWD token                                                |
-| GET    | `/health`           | Cek server nyala                                               |
+| GET    | `/pending`          | Antrean submission yang menunggu penilaian (dipakai agent AI)  |
+| GET    | `/leaderboard`      | Peringkat worker: jumlah menang + total reward                 |
+| POST   | `/verdicts`         | Agent lapor hasil + **alasan** AI (chain cuma simpan true/false) |
+| GET    | `/verdicts/:escrow` | Riwayat penilaian AI satu bounty                               |
+| GET    | `/health`           | Cek server nyala + status relayer                              |
+
+### Endpoint tulis (relayer) — butuh `RELAYER_PK`
+
+Backend yang tanda tangan & bayar gas, jadi peserta bisa bikin bounty tanpa `cast`. Tanpa `RELAYER_PK` route ini balas `503` dan sisa API tetap jalan.
+
+| Method | Route                          | Body                                              |
+| ------ | ------------------------------ | ------------------------------------------------- |
+| POST   | `/relay/bounty`                | `{ reward: "5", rules_uri, deadline_jam?: 24 }`   |
+| POST   | `/relay/bounty/:escrow/submit` | `{ proof_uri }`                                   |
+
+```bash
+curl -X POST http://localhost:3000/relay/bounty -H 'content-type: application/json' \
+  -d '{"reward":"5","rules_uri":"https://contoh.com/RULES.md"}'
+# → {"hash":"0x...","escrow":"0x...","bountyId":4}
+```
+
+> ⚠️ **Ini pola kustodian, bukan pola web3 yang benar.** Backend menyimpan private key, jadi siapa pun yang bisa memanggil API-mu bisa membelanjakan dana wallet itu — dan semua bounty tercatat atas nama satu alamat. Dipakai di sini murni biar demo workshop gampang. Pola produksinya: user tanda tangan sendiri dari wallet-nya (materi Sesi 7).
 
 ## Arsitektur
 
@@ -58,13 +94,18 @@ indexer/ ──► SQLite (papan-sayembara.db) ◄──────────
 | `src/config.ts`           | Konfigurasi: RPC, alamat kontrak, konstanta  |
 | `src/contracts.ts`        | ABI + event definitions + label status       |
 | `src/lib/chain.ts`        | viem public client (fallback + rank)         |
+| `src/lib/wallet.ts`       | dua wallet (relayer + juri) — satu-satunya yang tanda tangan tx |
 | `src/lib/db.ts`           | SQLite: skema, statement, query              |
 | `src/indexer/handlers.ts` | Log chain → baris database                   |
 | `src/indexer/backfill.ts` | Scan riwayat per chunk + checkpoint          |
 | `src/indexer/watch.ts`    | Pantau event baru real-time                  |
 | `src/services/bounty.ts`  | `readContract` + gabungan data on/off chain  |
+| `src/services/relayer.ts` | `writeContract`: createBounty + submitWork   |
+| `src/services/judge.ts`   | Juri AI: prompt + verdict JSON dari LLM      |
+| `src/services/oracle.ts`  | `fulfillVerification` (wallet juri)          |
 | `src/routes/api.ts`       | Endpoint REST (Hono)                         |
-| `src/index.ts`            | Entry point: indexer + server                |
+| `src/index.ts`            | Entry point 1 (`bun dev`): indexer + server  |
+| `src/oracle.ts`           | Entry point 2 (`bun oracle`): loop juri AI   |
 
 ## Konsep inti
 
@@ -72,19 +113,24 @@ indexer/ ──► SQLite (papan-sayembara.db) ◄──────────
 **`watchEvent`** = "tolong kabari kalau ada event X yang baru masuk".  
 Keduanya pake HTTP RPC (public node) = gratis, tanpa WebSocket.
 
+## Konfigurasi environment
+
+Salin `.env.example` jadi `.env`:
+
+| Variabel        | Wajib | Fungsi                                                          |
+| --------------- | ----- | --------------------------------------------------------------- |
+| `RPC_URL`       | tidak | RPC BSC Testnet pilihanmu; kosong = pakai daftar fallback       |
+| `PORT`          | tidak | Port API Hono, default 3000                                     |
+| `RELAYER_PK`    | tidak | Wallet panitia untuk `/relay/*`; kosong = route itu balas 503   |
+| `ORACLE_PK`     | tidak | Wallet juri untuk `bun oracle`; kosong = juri tidak bisa jalan  |
+| `LLM_BASE_URL`  | tidak | Endpoint OpenAI-compatible, default `https://api.openai.com/v1` |
+| `LLM_API_KEY`   | juri  | Kunci LLM; cuma dibutuhkan kalau kamu menjalankan `bun oracle`  |
+| `LLM_MODEL`     | tidak | Default `gpt-4o-mini`                                           |
+
+Alamat kontrak tidak lewat `.env` — sudah hardcode di `src/config.ts` biar semua peserta menunjuk deployment yang sama.
+
 ## Catatan untuk produksi
 
 - **Checkpointing:** block terakhir disimpen di `sync_checkpoint` per chunk → aman untuk restart.
 - **Reorg:** `INSERT OR IGNORE` + `ON CONFLICT` + `tx_hash UNIQUE` = idempotent; reorg kecil gak ngerusak.
 - **Rate limit:** kode udah fallback + rank beberapa RPC dan retry per chunk; kalau masih ketat, isi `RPC_URL` di `.env` dengan API key (NodeReal/ZAN).
-
-## Konfigurasi environment
-
-Salin `.env.example` jadi `.env`:
-
-| Variabel     | Wajib | Fungsi                                                     |
-| ------------ | ----- | ---------------------------------------------------------- |
-| `RPC_URL`    | tidak | RPC BSC Testnet pilihanmu; kosong = pakai daftar fallback  |
-| `PORT`       | tidak | Port API Hono, default 3000                                |
-
-Alamat kontrak tidak lewat `.env` — sudah hardcode di `src/config.ts` biar semua peserta menunjuk deployment yang sama.

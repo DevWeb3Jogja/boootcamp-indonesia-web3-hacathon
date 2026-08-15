@@ -1,19 +1,19 @@
 {
-  "name": "backend",
-  "module": "index.ts",
-  "type": "module",
+  "name": "papan-sayembara-backend",
+  "version": "1.0.0",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts",
+    "oracle": "bun run src/oracle.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "hono": "^4.12.33",
     "viem": "^2.55.10"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^5.9.0"
   }
 }

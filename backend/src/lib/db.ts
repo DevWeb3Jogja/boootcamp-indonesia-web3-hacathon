@@ -7,7 +7,9 @@ import type { Address } from "viem";
 // strict: bind {param} tanpa prefix "@" + error bila ada parameter terlewat
 export const db = new Database("papan-sayembara.db", { create: true, strict: true });
 
-db.exec("PRAGMA journal_mode = WAL;");
+// WAL = baca & tulis barengan; busy_timeout = sabar antre kalau proses lain lagi nulis
+// (dua proses pakai file ini: `bun dev` untuk indexer/API dan `bun oracle` untuk juri)
+db.exec("PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS bounties (
@@ -39,6 +41,18 @@ db.exec(`
     id          INTEGER PRIMARY KEY CHECK (id = 1),
     last_block  INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS verdicts (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    escrow     TEXT NOT NULL,
+    worker     TEXT NOT NULL,
+    eligible   INTEGER NOT NULL, -- 0/1; chain cuma simpan hasilnya, alasan AI hidup di sini
+    alasan     TEXT NOT NULL,
+    tx_hash    TEXT,
+    created_at INTEGER NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_verdicts_escrow ON verdicts(escrow);
 `);
 
 // Bentuk baris tabel (dipakai di services/routes)
@@ -90,3 +104,35 @@ export const getBoard = () => ({
   bounties: db.prepare("SELECT * FROM bounties ORDER BY block_number DESC").all() as BountyRow[],
   submissions: db.prepare("SELECT * FROM submissions ORDER BY block_number DESC").all() as SubmissionRow[],
 });
+
+// Submission yang masih menunggu penilaian (dipakai agent-oracle via GET /pending)
+export type PendingRow = Pick<SubmissionRow, "escrow" | "worker" | "proof_uri" | "block_number" | "created_at">;
+
+export const getPending = () =>
+  db.prepare(`
+    SELECT escrow, worker, proof_uri, block_number, created_at FROM submissions
+    WHERE status = 'submitted' ORDER BY block_number ASC
+  `).all() as PendingRow[];
+
+// Peringkat worker: jumlah menang + total reward (BigInt di JS — wei kelewat besar buat SUM SQLite)
+export const getLeaderboard = () => {
+  const rows = db.prepare("SELECT worker, reward_amount FROM submissions WHERE status = 'rewarded'")
+    .all() as { worker: string; reward_amount: string | null }[];
+  const skor = new Map<string, { wins: number; total: bigint }>();
+  for (const r of rows) {
+    const s = skor.get(r.worker) ?? { wins: 0, total: 0n };
+    skor.set(r.worker, { wins: s.wins + 1, total: s.total + BigInt(r.reward_amount ?? 0) });
+  }
+  return [...skor]
+    .map(([worker, s]) => ({ worker, wins: s.wins, total_reward: s.total.toString() }))
+    .sort((a, b) => b.wins - a.wins);
+};
+
+// Verdict AI: hasil + alasan (chain cuma tahu true/false — alasannya disimpan off-chain)
+export const insertVerdict = db.prepare(`
+  INSERT INTO verdicts (escrow, worker, eligible, alasan, tx_hash, created_at)
+  VALUES (@escrow, @worker, @eligible, @alasan, @txHash, @ts)
+`);
+
+export const getVerdicts = (escrow: string) =>
+  db.prepare("SELECT * FROM verdicts WHERE escrow = ? ORDER BY id DESC").all(escrow);

@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "backend",
@@ -8,10 +9,8 @@
         "viem": "^2.55.10",
       },
       "devDependencies": {
-        "@types/bun": "latest",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
+        "@types/bun": "^1.3.14",
+        "typescript": "^5.9.0",
       },
     },
   },
