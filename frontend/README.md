@@ -3,8 +3,8 @@
 Starter dApp UI untuk Papan Sayembara di **BNB Smart Chain Testnet**. Isinya baru kerangka:
 template + komponen UI + alamat kontrak. Sisanya kita bangun bareng pas sesi.
 
-Stack: Vite + React 19 + Tailwind v4 + shadcn/ui. SDK chain (**viem**) dan lapisan wallet
-(**RainbowKit + wagmi**) dipasang pas sesi, bukan bawaan starter.
+Stack: Vite + React 19 + Tailwind v4 + shadcn/ui. Sisanya dipasang pas sesi: **viem** +
+**TanStack Query** di Bagian 1, lalu **RainbowKit + wagmi** di Bagian 2.
 
 ## 1. Jalankan
 
@@ -41,15 +41,16 @@ cd ../backend && bun dev
 
 **Bagian 1 — papan (tanpa wallet, tanpa projectId):**
 
-- [ ] `bun add viem` + tempel ABI ke `src/lib/contracts.ts`
+- [ ] `bun add viem @tanstack/react-query`
+- [ ] `src/providers.tsx` — QueryClientProvider
 - [ ] `src/lib/api.ts` — ambil papan, peringkat, dan alasan juri AI dari backend
-- [ ] `src/hooks/use-fetch.ts` + `src/lib/format.ts`
+- [ ] `src/lib/format.ts`
 - [ ] Komponen: kartu bounty, papan peringkat
 
 **Bagian 2 — aksi (wallet peserta sendiri):**
 
-- [ ] `bun add @rainbow-me/rainbowkit wagmi @tanstack/react-query`
-- [ ] `src/lib/wagmi.ts` + `src/providers.tsx` — config chain & daftar wallet
+- [ ] `bun add @rainbow-me/rainbowkit wagmi`
+- [ ] `src/lib/wagmi.ts` + bungkus `providers.tsx` dengan Wagmi & RainbowKit
 - [ ] `src/lib/actions.ts` — approve → createBounty → submitWork
 - [ ] Komponen: tombol Connect, form bikin bounty, form kirim bukti
 
