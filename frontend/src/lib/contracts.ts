@@ -3,8 +3,8 @@
 export const EXPLORER = "https://testnet.bscscan.com";
 
 export const CONTRACTS = {
-  rewardToken: "0xd3ec43f60e2ac1517c4dd80c0a23ad8d902eaf0f",
-  bountyFactory: "0xfecc20bdaa28681bada577731b8a24f415cbca87",
+  rewardToken: "0xe02314d2662427ce4e8497160e323fd279d3c263",
+  bountyFactory: "0xaec3e0ff766d953b69c714c149af1d5b8b19f0c4",
 } as const;
 
 // Enum Status di BountyEscrow.sol — urutan harus sama persis

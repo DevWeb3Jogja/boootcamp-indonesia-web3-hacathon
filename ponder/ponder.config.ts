@@ -9,9 +9,9 @@ const bountyCreatedEvent = parseAbiItem(
   "event BountyCreated(uint256 indexed bountyId, address indexed escrow, address indexed creator, uint256 rewardAmount)",
 );
 
-// Deployment workshop (2 Agu 2026, verified) — salin dari SmartContract/broadcast/run-latest.json
-const FACTORY = "0xfed3881ffb229453f53c20ba377d10b857b08247" as const;
-const START_BLOCK = 122_685_851; // block deploy factory
+// Deployment workshop (16 Agu 2026, verified) — salin dari SmartContract/broadcast/run-latest.json
+const FACTORY = "0xaec3e0ff766d953b69c714c149af1d5b8b19f0c4" as const;
+const START_BLOCK = 125_435_962; // block deploy factory
 
 export default createConfig({
   chains: {

@@ -11,8 +11,8 @@ export const RPC_URLS = [
 
 // Alamat deployment workshop — salin dari broadcast/run-latest.json, jangan ketik manual
 export const CONTRACTS = {
-  rewardToken: "0xd3ec43f60e2ac1517c4dd80c0a23ad8d902eaf0f",
-  bountyFactory: "0xfecc20bdaa28681bada577731b8a24f415cbca87",
+  rewardToken: "0xe02314d2662427ce4e8497160e323fd279d3c263",
+  bountyFactory: "0xaec3e0ff766d953b69c714c149af1d5b8b19f0c4",
 } as const;
 
 // Dua wallet, dua peran. Kosong = fitur terkait mati, sisanya tetap jalan.
@@ -26,7 +26,7 @@ export const LLM = {
   model: process.env.LLM_MODEL ?? "gpt-4o-mini",
 } as const;
 
-export const DEPLOY_BLOCK = 124_034_703n; // block deploy factory, titik awal scan
+export const DEPLOY_BLOCK = 125_435_962n; // block deploy factory, titik awal scan
 export const CHUNK = 9000n; // drpc gratis: maks 10k block per getLogs
 export const PORT = Number(process.env.PORT ?? 3000);
 export const POLL_INTERVAL_MS = Number(process.env.POLL_INTERVAL_SECONDS ?? 15) * 1000;
